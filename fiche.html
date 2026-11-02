@@ -36,7 +36,7 @@
     padding:26px 12px 60px;
   }
   .doc{
-    position:relative;max-width:760px;margin:0 auto;
+    position:relative;max-width:1080px;margin:0 auto;
     background:var(--paper);
     padding:38px 40px 46px;
     box-shadow:0 6px 18px #00000030;
@@ -69,6 +69,33 @@
     width:48px;border:1px solid var(--rule);background:#fff;color:var(--ink);
     font-family:"Courier Prime",monospace;font-size:12px;padding:2px 4px;
   }
+
+  /* en-tête : nom, poste et palier à gauche, photo à droite */
+  /* 6 colonnes : nom 3 + poste 3 / espèce 3 + département 3 / palier, dégâts, chance 2 chacun */
+  .top{grid-column:1/-1;display:grid;grid-template-columns:repeat(6,1fr) auto;gap:14px 16px}
+  .top > .field{grid-column:span 2}
+  .top .f-nom,.top .f-poste,.top .f-espece,.top .f-dept{grid-column:span 3}
+  .top .f-photo{grid-column:7;grid-row:1/4;position:relative}
+  @media (max-width:900px){
+    .top{grid-template-columns:1fr 1fr auto}
+    .top > .field,.top .f-nom,.top .f-poste,.top .f-espece,.top .f-dept{grid-column:auto}
+    .top .f-photo{grid-column:3;grid-row:1/5}
+  }
+
+  /* photo : planche de l'espèce par défaut, URL saisie au clic */
+  .photo{width:180px;height:240px;margin:8px;border:1px solid var(--rule);background:#f1f2ed;display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer}
+  .photo img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
+  .photo span{font-family:"Courier Prime",monospace;font-size:10px;color:var(--ink-soft);text-align:center;padding:0 6px}
+  .url-pop{
+    display:none;position:absolute;z-index:10;top:100%;right:0;width:240px;margin-top:4px;
+    background:#fff;border:1px solid var(--rule);box-shadow:0 6px 18px #00000033;padding:8px;
+  }
+  .url-pop.open{display:block}
+  .url-pop input[type=url]{
+    width:100%;border:1px solid var(--rule);background:#fff;color:var(--ink);
+    font-family:"Courier Prime",monospace;font-size:12px;padding:4px 6px;
+  }
+  .url-pop .hint{font-size:11px;color:var(--ink-soft);margin-top:5px}
 
   /* paliers */
   .paliers{display:flex;gap:10px;padding:10px}
@@ -152,6 +179,11 @@
   @media (max-width:620px){
     .doc{padding:24px 18px 34px}
     .grid{grid-template-columns:1fr}
+    .top{grid-template-columns:1fr auto}
+    .top .f-nom{grid-column:1}
+    .top .f-photo{grid-column:2;grid-row:1}
+    .top > .field:not(.f-nom):not(.f-photo){grid-column:1/-1}
+    .photo{width:104px;height:138px}
     .letterhead{flex-direction:column}
     .refblock{text-align:left}
     .dead-stamp{font-size:30px}
@@ -185,36 +217,85 @@
 
   <div class="sheet">
     <div class="grid">
-      <div class="field" style="grid-column:1/-1">
-        <div class="lab">COLLABORATEUR·RICE</div>
-        <div class="val"><input type="text" id="nom" placeholder="nom, prénom" autocomplete="off"></div>
+      <div class="top">
+        <div class="field f-nom">
+          <div class="lab">COLLABORATEUR·RICE</div>
+          <div class="val"><input type="text" id="nom" placeholder="nom, prénom" autocomplete="off"></div>
+        </div>
+
+        <div class="field f-photo">
+          <div class="lab">PHOTO</div>
+          <div class="photo" id="photo" role="button" tabindex="0" title="Changer la photo"></div>
+          <div class="url-pop" id="urlPop">
+            <input type="url" id="portrait" placeholder="URL d'une image" autocomplete="off">
+            <div class="hint">Vide : planche de l'espèce (RH-21).</div>
+          </div>
+        </div>
+
+        <div class="field f-poste">
+          <div class="lab">POSTE</div>
+          <div class="val"><input type="text" id="fonction" list="l-postes" placeholder="ex. choriste" autocomplete="off"></div>
+        </div>
+
+        <div class="field f-espece">
+          <div class="lab">ESPÈCE</div>
+          <div class="val"><input type="text" id="espece" list="l-especes" placeholder="ex. humain·e" autocomplete="off"></div>
+        </div>
+
+        <div class="field f-dept">
+          <div class="lab">DÉPARTEMENT</div>
+          <div class="val"><input type="text" id="departement" list="l-departements" placeholder="tirage D20, cf. RH-21" autocomplete="off"></div>
+        </div>
+
+        <div class="field f-palier">
+          <div class="lab">PALIER</div>
+          <div class="paliers" id="paliers"></div>
+        </div>
+
+        <div class="field inline">
+          <div class="lab">POINTS DE DÉGÂTS</div>
+          <div class="numval"><input type="number" id="cb" min="0"></div>
+        </div>
+
+        <div class="field inline">
+          <div class="lab">POINTS DE CHANCE</div>
+          <div class="track" id="ch"></div>
+        </div>
       </div>
 
-      <div class="field">
-        <div class="lab">FONCTION</div>
-        <div class="val"><input type="text" id="fonction" placeholder="ex. chargé·e de psalmodie" autocomplete="off"></div>
-      </div>
-
-      <div class="field">
-        <div class="lab">PALIER</div>
-        <div class="paliers" id="paliers"></div>
-      </div>
+      <!-- suggestions reprises de la grille RH-21 (saisie libre possible) -->
+      <datalist id="l-postes">
+        <option value="Stagiaire non rémunéré·e"><option value="Choriste"><option value="Agent·e d'accueil du guichet unique">
+        <option value="Agent·e d'entretien"><option value="Coursier·e interne"><option value="Opérateur·rice de saisie DR-7">
+        <option value="Chef·fe de chœur"><option value="Comptable"><option value="Chargé·e de psalmodie confirmé·e">
+        <option value="Gestionnaire de paie"><option value="Technicien·ne de maintenance des cercles"><option value="Référent·e sécurité">
+        <option value="Directeur·rice de département"><option value="Responsable RH"><option value="Responsable Qualité &amp; Conformité Rituelle">
+        <option value="Responsable des Achats"><option value="Auditeur·rice interne"><option value="Direction">
+        <option value="Administrateur·rice"><option value="Prestataire de contrôle réglementaire"><option value="Actionnaire de référence">
+        <option value="Consultant·e"><option value="Entité de tutelle">
+      </datalist>
+      <datalist id="l-especes">
+        <option value="Humain·e"><option value="Goule"><option value="Profond saisonnier"><option value="Rat à face humaine">
+        <option value="Homoncule"><option value="Zoog"><option value="Profond titulaire"><option value="Maigre bête de la nuit">
+        <option value="Homme-serpent de Valusia"><option value="Ghast"><option value="Gug"><option value="Mi-go">
+        <option value="Chien de Tindalos"><option value="Polype volant"><option value="Grand-Race de Yith"><option value="Chthonien">
+        <option value="Shoggoth"><option value="Père Dagon"><option value="Mère Hydra"><option value="Rejeton stellaire">
+        <option value="Rôdeur dimensionnel"><option value="Ancien"><option value="Sombre rejeton"><option value="Larve amorphe de Tsathoggua">
+        <option value="Celui qu'on ne nomme pas">
+      </datalist>
+      <datalist id="l-departements">
+        <option value="1. Accueil"><option value="2. Services généraux"><option value="3. Chœur"><option value="4. Archives &amp; Patrimoine">
+        <option value="5. Secrétariat"><option value="6. Espaces verts"><option value="7. Liturgie"><option value="8. Gardiennage">
+        <option value="9. Logistique"><option value="10. Immobilier"><option value="11. Méthodes"><option value="12. Qualité">
+        <option value="13. Ressources humaines"><option value="14. Offrandes"><option value="15. Conseil scientifique"><option value="16. Communication">
+        <option value="17. Recherche &amp; Développement"><option value="18. Approvisionnements"><option value="19. Pépinière de talents"><option value="20. Non communiqué">
+      </datalist>
 
       <div class="field" style="grid-column:1/-1">
         <div class="lab">CAPITAL SANTÉ (PV)
           <span class="maxctl">max <input type="number" id="pvMax" min="1"></span>
         </div>
         <div class="track" id="pv"></div>
-      </div>
-
-      <div class="field inline">
-        <div class="lab">POINTS DE COMBAT</div>
-        <div class="numval"><input type="number" id="cb" min="0"></div>
-      </div>
-
-      <div class="field inline">
-        <div class="lab">POINTS DE CHANCE</div>
-        <div class="track" id="ch"></div>
       </div>
 
       <div class="field">
@@ -267,7 +348,18 @@
     "L'actif de la mutuelle — l'âme est réaffectée au premier corps libre",
     "Le cousin — M. Nyarlathotep « connaît quelqu'un »"
   ];
-  var DEF={nom:'',fonction:'',inventaire:'',notes:'',palier:1,pvMax:20,pv:20,cb:6,ch:4,mort:false,reins:null,silenceEnd:null};
+  var PLANCHES={
+    "Humain·e":"humain.jpg","Goule":"goule.jpg","Profond saisonnier":"profond-saisonnier.jpg",
+    "Rat à face humaine":"rat.jpg","Homoncule":"homoncule.jpg","Zoog":"zoog.jpg",
+    "Profond titulaire":"profond-titulaire.jpg","Maigre bête de la nuit":"maigre-bete.jpg",
+    "Homme-serpent de Valusia":"homme-serpent.jpg","Ghast":"ghast.jpg","Gug":"gug.jpg",
+    "Mi-go":"mi-go.jpg","Chien de Tindalos":"chien-tindalos.jpg","Polype volant":"polype-volant.jpg",
+    "Grand-Race de Yith":"yith.jpg","Chthonien":"chthonien.jpg","Shoggoth":"shoggoth.jpg",
+    "Père Dagon":"pere-dagon.webp","Mère Hydra":"mere-hydra.jpg","Rejeton stellaire":"rejeton-stellaire.jpg",
+    "Rôdeur dimensionnel":"rodeur.jpg","Ancien":"ancien.jpg","Sombre rejeton":"sombre-rejeton.jpg",
+    "Larve amorphe de Tsathoggua":"larve-tsathoggua.jpg","Celui qu'on ne nomme pas":"hastur.jpg"
+  };
+  var DEF={nom:'',fonction:'',espece:'',departement:'',portrait:'',inventaire:'',notes:'',palier:1,pvMax:6,pv:6,cb:6,ch:4,mort:false,reins:null,silenceEnd:null};
   var S;
 
   function load(){
@@ -312,8 +404,22 @@
       })(p);
     }
   }
+  function renderPhoto(){
+    var box=$('photo'), src=S.portrait.trim() || (PLANCHES[S.espece.trim()] ? 'img/rh21/'+PLANCHES[S.espece.trim()] : '');
+    box.textContent='';
+    function vide(txt){ var s=document.createElement('span'); s.textContent=txt; box.appendChild(s); }
+    if(!src){ vide('photo non fournie'); return; }
+    var img=document.createElement('img');
+    img.alt='';
+    img.onerror=function(){ box.textContent=''; vide('image introuvable'); };
+    img.src=src;
+    box.appendChild(img);
+  }
   function render(){
     $('nom').value=S.nom; $('fonction').value=S.fonction;
+    $('espece').value=S.espece; $('departement').value=S.departement;
+    $('portrait').value=S.portrait;
+    renderPhoto();
     $('inventaire').value=S.inventaire; $('notes').value=S.notes;
     $('pvMax').value=S.pvMax; $('cb').value=S.cb;
     buildPaliers();
@@ -325,6 +431,24 @@
 
   $('nom').addEventListener('input',function(){S.nom=this.value;save();});
   $('fonction').addEventListener('input',function(){S.fonction=this.value;save();});
+  $('espece').addEventListener('input',function(){S.espece=this.value;save();renderPhoto();});
+  $('portrait').addEventListener('input',function(){S.portrait=this.value;save();renderPhoto();});
+
+  /* le champ d'URL ne s'ouvre qu'au clic sur la photo */
+  function togglePop(){
+    var pop=$('urlPop');
+    pop.classList.toggle('open');
+    if(pop.classList.contains('open')) $('portrait').focus();
+  }
+  $('photo').addEventListener('click',togglePop);
+  $('photo').addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); togglePop(); } });
+  $('portrait').addEventListener('keydown',function(e){
+    if(e.key==='Enter'||e.key==='Escape'){ $('urlPop').classList.remove('open'); $('photo').focus(); }
+  });
+  document.addEventListener('click',function(e){
+    if(!e.target.closest('.f-photo')) $('urlPop').classList.remove('open');
+  });
+  $('departement').addEventListener('input',function(){S.departement=this.value;save();});
   $('inventaire').addEventListener('input',function(){S.inventaire=this.value;save();});
   $('notes').addEventListener('input',function(){S.notes=this.value;save();});
   $('pvMax').addEventListener('change',function(){
@@ -367,7 +491,7 @@
   }
 
   $('btnNew').onclick=function(){
-    S=Object.assign({},DEF,{fonction:S.fonction});
+    S=Object.assign({},DEF,{fonction:S.fonction,departement:S.departement});
     save();
     $('reinsBox').style.display='none';
     $('btnNew').style.display='none';
