@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cthulhu Inc. — Fiche collaborateur RH-22</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Courier+Prime:wght@400;700&family=Reenie+Beanie&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#fcfcfa;
+    --ink:#202020;
+    --ink-soft:#5a5f59;
+    --corp:#0f5c63;
+    --rule:#c9ccc4;
+    --rule-soft:#e3e5df;
+    --stamp:#5b2c83;
+    --pen:#1f3a93;
+    --blood:#8a1f1f;
+    --backdrop:#8d9089;
+    box-sizing:border-box;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){color-scheme:dark;--backdrop:#23262a}
+  }
+  :root[data-theme="dark"]{color-scheme:dark;--backdrop:#23262a}
+  html{scroll-padding-top:env(safe-area-inset-top,0px)}
+  *{box-sizing:border-box}
+  body{
+    margin:0;background:var(--backdrop);
+    font-family:"Archivo","Helvetica Neue",Arial,sans-serif;
+    color:var(--ink);font-size:15px;line-height:1.45;
+    padding:26px 12px 60px;
+  }
+  .doc{
+    position:relative;max-width:760px;margin:0 auto;
+    background:var(--paper);
+    padding:38px 40px 46px;
+    box-shadow:0 6px 18px #00000030;
+  }
+  .letterhead{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;border-bottom:2.5px solid var(--corp);padding-bottom:10px}
+  .mark{display:flex;align-items:center;gap:11px}
+  .mark-name{font-weight:700;font-size:16.5px;letter-spacing:.14em;color:var(--corp);line-height:1.1}
+  .mark-sub{font-size:9.5px;color:var(--ink-soft);font-style:italic;margin-top:2px}
+  .refblock{font-family:"Courier Prime",monospace;font-size:10.5px;line-height:1.75;text-align:right;color:var(--ink-soft);white-space:nowrap}
+  .refblock b{color:var(--ink);font-weight:400}
+  .doctitle{margin:20px 0 4px;font-size:20px;font-weight:600}
+  .docsub{font-size:12.5px;color:var(--ink-soft);margin:0 0 20px}
+
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 22px}
+  .field{border:1px solid var(--rule)}
+  .lab{background:#f1f2ed;font-size:10.5px;letter-spacing:.08em;color:var(--ink-soft);border-bottom:1px solid var(--rule);padding:5px 9px;font-weight:600;display:flex;justify-content:space-between;align-items:center}
+  .lab .maxctl{display:flex;align-items:center;gap:5px;font-weight:400;letter-spacing:0}
+  .val{padding:9px 10px}
+  input[type=text]{
+    width:100%;border:0;outline:0;background:transparent;
+    font-family:"Reenie Beanie",cursive;font-size:25px;color:var(--pen);
+    padding:0;line-height:1.1;
+  }
+  input[type=number]{
+    width:48px;border:1px solid var(--rule);background:#fff;color:var(--ink);
+    font-family:"Courier Prime",monospace;font-size:12px;padding:2px 4px;
+  }
+
+  /* paliers */
+  .paliers{display:flex;gap:10px;padding:10px}
+  .pal{
+    width:38px;height:38px;border:2px solid var(--corp);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:16px;color:var(--corp);
+    cursor:pointer;user-select:none;background:#fff;
+  }
+  .pal.on{background:var(--corp);color:#fff}
+
+  /* pistes */
+  .track{display:flex;flex-wrap:wrap;gap:7px;padding:10px}
+  .tick{width:26px;height:26px;cursor:pointer;user-select:none;position:relative;flex:none}
+  .tick svg{display:block;width:100%;height:100%}
+  .tick .fill{fill:#fff;stroke:var(--corp);stroke-width:2.2}
+  .tick.on .fill{fill:var(--corp)}
+  .tick.chance .fill{stroke:var(--stamp)}
+  .tick.chance.on .fill{fill:var(--stamp)}
+  .tick:hover{transform:scale(1.12)}
+
+  .fine{font-size:11px;color:var(--ink-soft)}
+
+  .deathbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:26px;border-top:1px solid var(--rule-soft);padding-top:16px;flex-wrap:wrap}
+  button{font-family:inherit;cursor:pointer}
+  .btn-death{
+    background:#fff;border:2px solid var(--blood);color:var(--blood);
+    font-weight:700;letter-spacing:.06em;font-size:12.5px;
+    padding:9px 16px;
+  }
+  .btn-death:hover{background:var(--blood);color:#fff}
+  .footnote{margin-top:26px;padding-top:9px;border-top:1px solid var(--rule-soft);font-family:"Courier Prime",monospace;font-size:10px;color:var(--ink-soft);line-height:1.6}
+
+  /* ---- décès ---- */
+  .overlay{
+    position:fixed;inset:0;background:#00000066;
+    display:none;align-items:center;justify-content:center;padding:18px;z-index:10;
+  }
+  .overlay.open{display:flex}
+  .modal{
+    background:var(--paper);max-width:430px;width:100%;
+    padding:26px 26px 22px;box-shadow:0 12px 30px #00000055;
+  }
+  .modal h2{margin:0 0 10px;font-size:16px;color:var(--blood)}
+  .modal p{font-size:13px;margin:0 0 10px}
+  .modal .row{display:flex;gap:12px;justify-content:flex-end;margin-top:18px}
+  .btn-cancel{background:#f1f2ed;border:1px solid var(--rule);padding:8px 14px;font-size:12.5px}
+  .btn-confirm{background:var(--blood);border:2px solid var(--blood);color:#fff;font-weight:700;padding:8px 14px;font-size:12.5px}
+
+  .dead-stamp{
+    display:none;position:absolute;top:34%;left:50%;
+    transform:translate(-50%,-50%) rotate(-11deg);
+    border:5px solid var(--blood);color:var(--blood);
+    font-weight:700;font-size:44px;letter-spacing:.2em;
+    padding:10px 28px;opacity:.85;pointer-events:none;
+    background:#fcfcfacc;
+  }
+  .doc.dead .dead-stamp{display:block}
+  .doc.dead .sheet{opacity:.45;pointer-events:none;filter:grayscale(.6)}
+
+  .after{display:none;margin-top:22px;border:2px solid var(--blood);padding:14px 16px}
+  .doc.dead .after{display:block}
+  .after .t{font-weight:700;color:var(--blood);font-size:13px;letter-spacing:.06em;margin-bottom:6px}
+  .silence{font-family:"Courier Prime",monospace;font-size:13px}
+  .silence b{font-size:18px}
+  .reins{display:none;margin-top:10px;font-size:13.5px}
+  .reins .r{font-family:"Reenie Beanie",cursive;font-size:23px;color:var(--pen)}
+  .btn-new{margin-top:12px;background:var(--corp);border:2px solid var(--corp);color:#fff;font-weight:700;padding:8px 14px;font-size:12.5px;display:none}
+
+  @media (max-width:620px){
+    .doc{padding:24px 18px 34px}
+    .grid{grid-template-columns:1fr}
+    .letterhead{flex-direction:column}
+    .refblock{text-align:left}
+    .dead-stamp{font-size:30px}
+  }
+</style>
+</head>
+<body>
+<div class="doc" id="doc">
+  <div class="dead-stamp">DÉCÉDÉ·E</div>
+
+  <div class="letterhead">
+    <div class="mark">
+      <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true">
+        <circle cx="17" cy="17" r="15.4" fill="none" stroke="#0f5c63" stroke-width="2.2"/>
+        <path d="M17 8.4c-3.1 0-5.2 2-5.2 4.6 0 2.2 1.5 3.4 1.5 5.1 0 1.9-1.9 2.4-1.9 4.4M17 8.4c3.1 0 5.2 2 5.2 4.6 0 2.2-1.5 3.4-1.5 5.1 0 1.9 1.9 2.4 1.9 4.4M17 12.6v11.8" fill="none" stroke="#0f5c63" stroke-width="1.9" stroke-linecap="round"/>
+      </svg>
+      <div>
+        <div class="mark-name">CTHULHU INC.</div>
+        <div class="mark-sub">Ressources Humaines — suivi individuel</div>
+      </div>
+    </div>
+    <div class="refblock">
+      Fiche <b>RH-22</b><br>
+      Équipe <b>Renfort Liturgique</b><br>
+      Conservation <b>poste du collaborateur</b>
+    </div>
+  </div>
+
+  <h1 class="doctitle">Fiche individuelle du collaborateur</h1>
+  <p class="docsub">À tenir à jour en continu. La fiche fait foi, y compris contre son titulaire.</p>
+
+  <div class="sheet">
+    <div class="grid">
+      <div class="field" style="grid-column:1/-1">
+        <div class="lab">COLLABORATEUR·RICE</div>
+        <div class="val"><input type="text" id="nom" placeholder="nom, prénom" autocomplete="off"></div>
+      </div>
+
+      <div class="field">
+        <div class="lab">FONCTION</div>
+        <div class="val"><input type="text" id="fonction" placeholder="ex. chargé·e de psalmodie" autocomplete="off"></div>
+      </div>
+
+      <div class="field">
+        <div class="lab">PALIER</div>
+        <div class="paliers" id="paliers"></div>
+      </div>
+
+      <div class="field" style="grid-column:1/-1">
+        <div class="lab">CAPITAL SANTÉ (PV)
+          <span class="maxctl">max <input type="number" id="pvMax" min="1" max="25"> / 25</span>
+        </div>
+        <div class="track" id="pv"></div>
+      </div>
+
+      <div class="field">
+        <div class="lab">POINTS DE COMBAT
+          <span class="maxctl">max <input type="number" id="cbMax" min="1" max="10"> / 10</span>
+        </div>
+        <div class="track" id="cb"></div>
+      </div>
+
+      <div class="field">
+        <div class="lab">POINTS DE CHANCE <span class="maxctl">max 3</span></div>
+        <div class="track" id="ch"></div>
+      </div>
+    </div>
+
+    <div class="deathbar">
+      <span class="fine">En cas d'incident, maintenir la fiche à jour avant de prévenir les secours.</span>
+      <button class="btn-death" id="btnDeath">CONSTATER LE DÉCÈS</button>
+    </div>
+  </div>
+
+  <div class="after">
+    <div class="t">PROCÉDURE DE DÉCÈS EN COURS</div>
+    <div class="silence" id="silence"></div>
+    <div class="reins" id="reinsBox">Réinsertion attribuée : <span class="r" id="reins"></span></div>
+    <button class="btn-new" id="btnNew">Établir la fiche du remplaçant</button>
+  </div>
+
+  <div class="footnote">RH-22 · La fiche est conservée localement sur le poste du collaborateur. L'entreprise décline toute responsabilité en cas de perte des données, du collaborateur, ou des deux. · Le constat de décès vaut formulaire DR-7 pré-rempli.</div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <h2>Constat de décès</h2>
+    <p>Le décès du collaborateur sera constaté. Cette opération est <b>définitive</b> et déclenche : la minute de silence réglementaire (décomptée de la pause), la restitution des aménagements physiologiques, et l'attribution d'une réinsertion.</p>
+    <p class="fine">Le capital santé restant est reversé au régime collectif.</p>
+    <div class="row">
+      <button class="btn-cancel" id="btnCancel">Annuler</button>
+      <button class="btn-confirm" id="btnConfirm">Constater</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var KEY='cthulhu-inc-fiche-rh22';
+  var REINS=[
+    "Le remplaçant — suivant sur la pile de CV, badge au prénom du mort",
+    "L'intérimaire — mission « renfort liturgique », n'a rien signé",
+    "Le fantôme — le préavis de 3 semaines survit au décès, c'est écrit",
+    "Le reclassé — une ressource du couloir reçoit le poste et un prénom",
+    "L'actif de la mutuelle — l'âme est réaffectée au premier corps libre",
+    "Le cousin — M. Nyarlathotep « connaît quelqu'un »"
+  ];
+  var DEF={nom:'',fonction:'',palier:1,pvMax:20,pv:20,cbMax:6,cb:6,ch:3,mort:false,reins:null,silenceEnd:null};
+  var S;
+
+  function load(){
+    try{
+      var raw=localStorage.getItem(KEY);
+      if(!raw) return null;
+      var o=JSON.parse(raw);
+      return Object.assign({},DEF,o);
+    }catch(e){ return null; }
+  }
+  function save(){
+    try{ localStorage.setItem(KEY,JSON.stringify(S)); }catch(e){}
+  }
+  S=load()||Object.assign({},DEF);
+
+  var $=function(id){return document.getElementById(id)};
+  var heart='<svg viewBox="0 0 24 24"><path class="fill" d="M12 20.3C6.4 16 3 12.8 3 9.1 3 6.4 5.1 4.5 7.6 4.5c1.7 0 3.3.9 4.4 2.4 1.1-1.5 2.7-2.4 4.4-2.4 2.5 0 4.6 1.9 4.6 4.6 0 3.7-3.4 6.9-9 11.2z"/></svg>';
+  var pip='<svg viewBox="0 0 24 24"><rect class="fill" x="4" y="4" width="16" height="16" rx="2"/></svg>';
+  var dia='<svg viewBox="0 0 24 24"><path class="fill" d="M12 2.6 21.4 12 12 21.4 2.6 12z"/></svg>';
+
+  function buildTrack(el, max, val, glyph, extra, onSet){
+    el.innerHTML='';
+    for(var i=0;i<max;i++){
+      (function(i){
+        var d=document.createElement('span');
+        d.className='tick'+(extra?' '+extra:'')+(i<val?' on':'');
+        d.innerHTML=glyph;
+        d.title=(i+1)+' / '+max;
+        d.onclick=function(){ onSet(i+1===val()?i:i+1); };
+        el.appendChild(d);
+      })(i);
+    }
+  }
+  function buildPaliers(){
+    var el=$('paliers'); el.innerHTML='';
+    for(var p=1;p<=5;p++){
+      (function(p){
+        var d=document.createElement('span');
+        d.className='pal'+(p<=S.palier?' on':'');
+        d.textContent=p;
+        d.onclick=function(){ S.palier=p; save(); render(); };
+        el.appendChild(d);
+      })(p);
+    }
+  }
+  function render(){
+    $('nom').value=S.nom; $('fonction').value=S.fonction;
+    $('pvMax').value=S.pvMax; $('cbMax').value=S.cbMax;
+    buildPaliers();
+    buildTrack($('pv'), S.pvMax, S.pv, heart, '', function(v){S.pv=v;save();render();});
+    buildTrack($('cb'), S.cbMax, S.cb, pip, '', function(v){S.cb=v;save();render();});
+    buildTrack($('ch'), 3, S.ch, dia, 'chance', function(v){S.ch=v;save();render();});
+    document.getElementById('doc').classList.toggle('dead', !!S.mort);
+    if(S.mort) renderDeath();
+  }
+
+  $('nom').addEventListener('input',function(){S.nom=this.value;save();});
+  $('fonction').addEventListener('input',function(){S.fonction=this.value;save();});
+  $('pvMax').addEventListener('change',function(){
+    var v=Math.max(1,Math.min(25,parseInt(this.value)||1));
+    S.pvMax=v; S.pv=Math.min(S.pv,v); save(); render();
+  });
+  $('cbMax').addEventListener('change',function(){
+    var v=Math.max(1,Math.min(10,parseInt(this.value)||1));
+    S.cbMax=v; S.cb=Math.min(S.cb,v); save(); render();
+  });
+
+  /* ---- décès ---- */
+  $('btnDeath').onclick=function(){ $('overlay').classList.add('open'); };
+  $('btnCancel').onclick=function(){ $('overlay').classList.remove('open'); };
+  $('btnConfirm').onclick=function(){
+    $('overlay').classList.remove('open');
+    S.mort=true;
+    S.pv=0;
+    S.reins=REINS[Math.floor(Math.random()*6)];
+    S.silenceEnd=Date.now()+60000;
+    save(); render();
+  };
+
+  var timer=null;
+  function renderDeath(){
+    var sil=$('silence');
+    function tick(){
+      var left=Math.ceil(((S.silenceEnd||0)-Date.now())/1000);
+      if(left>0){
+        sil.innerHTML='Minute de silence en cours — <b>'+left+' s</b> <span class="fine">(décomptée de la pause)</span>';
+      }else{
+        sil.innerHTML='Minute de silence : <b>effectuée</b>. Reprise du travail.';
+        $('reinsBox').style.display='block';
+        $('reins').textContent=S.reins||'';
+        $('btnNew').style.display='inline-block';
+        if(timer){clearInterval(timer);timer=null;}
+      }
+    }
+    tick();
+    if(!timer && (S.silenceEnd||0)>Date.now()) timer=setInterval(tick,500);
+  }
+
+  $('btnNew').onclick=function(){
+    S=Object.assign({},DEF,{fonction:S.fonction});
+    save();
+    $('reinsBox').style.display='none';
+    $('btnNew').style.display='none';
+    render();
+  };
+
+  render();
+})();
+</script>
+</body>
+</html>
