@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cthulhu Inc. — Grille des paliers RH-21</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Redacted+Script&family=Reenie+Beanie&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<base target="_top">
+<style>
+  /* planches d'identification au survol (au toucher sur mobile) */
+  /* une ligne par espèce : pas de filet horizontal à l'intérieur d'un palier */
+  .affect tr:has(> td:first-child .spec) > td,.affect tr:nth-child(n+3) > td:last-child{border-top-style:hidden}
+  .affect td:nth-last-child(-n+2){padding-top:3px;padding-bottom:3px;white-space:nowrap}
+  @media (max-width:640px){ .affect td:nth-last-child(-n+2){white-space:normal} }
+  .specs{list-style:none;margin:0;padding:0}
+  .specs li{margin:0 0 3px}
+  .spec{position:relative;border-bottom:1px dotted var(--corp);cursor:help;outline:0}
+  .spec em{font-style:normal;color:var(--ink-soft);font-size:11.5px}
+  .plate{
+    display:none;position:absolute;z-index:20;top:calc(100% + 6px);left:0;
+    width:198px;padding:8px 8px 6px;background:#fff;border:1px solid var(--rule);
+    box-shadow:0 6px 18px #00000033;
+  }
+  .plate img{display:block;width:180px;height:auto;background:#f1f2ed}
+  .plate-cap{display:block;margin-top:5px;font-family:"Courier Prime",monospace;font-size:10px;color:var(--ink-soft)}
+  .spec:hover .plate,.spec:focus .plate{display:block}
+  @media (hover:none){
+    .plate{position:fixed;top:auto;left:50%;bottom:16px;transform:translateX(-50%)}
+  }
+</style>
+</head>
+<body>
+<div class="shelf">
+<a class="backlink" href="index.html">&larr; retour au panneau</a>
+<!-- ============ RH-21. GRILLE DES PALIERS ============ -->
+<section class="doc">
+  <div class="letterhead">
+    <div class="mark">
+      <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true">
+        <circle cx="17" cy="17" r="15.4" fill="none" stroke="#0f5c63" stroke-width="2.2"/>
+        <path d="M17 8.4c-3.1 0-5.2 2-5.2 4.6 0 2.2 1.5 3.4 1.5 5.1 0 1.9-1.9 2.4-1.9 4.4M17 8.4c3.1 0 5.2 2 5.2 4.6 0 2.2-1.5 3.4-1.5 5.1 0 1.9 1.9 2.4 1.9 4.4M17 12.6v11.8" fill="none" stroke="#0f5c63" stroke-width="1.9" stroke-linecap="round"/>
+      </svg>
+      <div>
+        <div class="mark-name">CTHULHU INC.</div>
+        <div class="mark-sub">Direction des Ressources Humaines</div>
+      </div>
+    </div>
+    <div class="refblock">
+      Réf. <b>RH-21</b><br>
+      Version <b>janvier</b><br>
+      Applicable <b>au recrutement</b>
+    </div>
+  </div>
+
+  <h1 class="doctitle">Grille de classification par palier</h1>
+  <p class="docsub">Attributs de base des ressources humaines, avant attribution de la dotation complémentaire.</p>
+
+  <div class="stamp-float"><span class="stamp r2">VALIDÉ<small>sous réserve de révision</small></span></div>
+
+  <div class="art">
+    <div class="art-n">Art. 1</div>
+    <div class="art-t">Le palier est attribué au recrutement par tirage au <span class="mono">D20</span>, selon la grille ci-dessous. Il est reporté sur la fiche collaborateur RH-22.</div>
+  </div>
+  <div class="art">
+    <div class="art-n">Art. 2</div>
+    <div class="art-t">Les valeurs de la grille s'entendent avant ajout du résultat au <span class="mono">D10</span>, à répartir par le collaborateur.</div>
+  </div>
+
+  <h2 class="fine" style="margin:22px 0 6px;font-weight:600;letter-spacing:.06em">ATTRIBUTS DE BASE</h2>
+  <table>
+    <tr><th>Palier</th><th class="num">Tirage D20</th><th class="num">PV</th><th class="num">PdD</th><th class="num">PC</th></tr>
+    <tr><td>1</td><td class="num">1&nbsp;–&nbsp;10</td><td class="num">2</td><td class="num">1</td><td class="num">1</td></tr>
+    <tr><td>2</td><td class="num">11&nbsp;–&nbsp;16</td><td class="num">4</td><td class="num">2</td><td class="num">1</td></tr>
+    <tr><td>3</td><td class="num">17&nbsp;–&nbsp;18</td><td class="num">6</td><td class="num">3</td><td class="num">0</td></tr>
+    <tr><td>4</td><td class="num">19</td><td class="num">8</td><td class="num">4</td><td class="num">0</td></tr>
+    <tr><td>5</td><td class="num">20</td><td class="num">10</td><td class="num">5</td><td class="num">0</td></tr>
+  </table>
+
+  <h2 class="fine" style="margin:22px 0 6px;font-weight:600;letter-spacing:.06em">EXEMPLES D'AFFECTATION</h2>
+  <p class="fine">Les planches d'identification sont consultables au survol de chaque espèce.</p>
+  <table class="affect">
+    <tr><th style="width:48px">Palier</th><th>Postes</th><th>Espèce</th><th>Département d'affectation</th></tr>
+
+    <tr><td rowspan="6">1</td>
+      <td class="txt" rowspan="6"><ul class="specs">
+        <li>Stagiaire non rémunéré·e</li>
+        <li>Choriste</li>
+        <li>Agent·e d'accueil du guichet unique</li>
+        <li>Agent·e d'entretien (niveaux 1 à 4)</li>
+        <li>Coursier·e interne</li>
+        <li>Opérateur·rice de saisie DR-7</li>
+      </ul></td>
+      <td class="txt"><span class="spec" tabindex="0">Humain·e<span class="plate"><img src="img/rh21/humain.jpg" alt="Humain·e" loading="lazy"><span class="plate-cap">Pl. 1 — Humain·e</span></span></span></td>
+      <td class="txt">Tous services</td></tr>
+    <tr><td class="txt"><span class="spec" tabindex="0">Goule<span class="plate"><img src="img/rh21/goule.jpg" alt="Goule" loading="lazy"><span class="plate-cap">Pl. 2 — Goule</span></span></span></td>
+      <td class="txt">Services généraux</td></tr>
+    <tr><td class="txt"><span class="spec" tabindex="0">Profond saisonnier<span class="plate"><img src="img/rh21/profond-saisonnier.jpg" alt="Profond saisonnier" loading="lazy"><span class="plate-cap">Pl. 3 — Profond saisonnier</span></span></span></td>
+      <td class="txt">Chœur</td></tr>
+    <tr><td class="txt"><span class="spec" tabindex="0">Rat à face humaine<span class="plate"><img src="img/rh21/rat.jpg" alt="Rat à face humaine" loading="lazy"><span class="plate-cap">Pl. 4 — Rat à face humaine</span></span></span></td>
+      <td class="txt">Archives</td></tr>
+    <tr><td class="txt"><span class="spec" tabindex="0">Homoncule<span class="plate"><img src="img/rh21/homoncule.jpg" alt="Homoncule" loading="lazy"><span class="plate-cap">Pl. 5 — Homoncule</span></span></span></td>
+      <td class="txt">Secrétariat</td></tr>
+    <tr><td class="txt"><span class="spec" tabindex="0">Zoog<span class="plate"><img src="img/rh21/zoog.jpg" alt="Zoog" loading="lazy"><span class="plate-cap">Pl. 6 — Zoog</span></span></span></td>
+      <td class="txt">Espaces verts</td></tr>
+
+    <tr><td rowspan="5">2</td>
+      <td class="txt" rowspan="5"><ul class="specs">
+        <li>Chef·fe de chœur</li>
+        <li>Comptable</li>
+        <li>Chargé·e de psalmodie confirmé·e</li>
+        <li>Gestionnaire de paie (points Kudos)</li>
+        <li>Technicien·ne de maintenance des cercles</li>
+        <li>Référent·e sécurité (incendie et invocation)</li>
+      </ul></td>
+      <td class="txt"><span class="spec" tabindex="0">Profond titulaire<span class="plate"><img src="img/rh21/profond-titulaire.jpg" alt="Profond titulaire" loading="lazy"><span class="plate-cap">Pl. 7 — Profond titulaire</span></span></span></td>
+      <td class="txt">Liturgie</td></tr>
+    <tr><td class="txt"><span class="spec" tabindex="0">Maigre bête de la nuit<span class="plate"><img src="img/rh21/maigre-bete.jpg" alt="Maigre bête de la nuit" loading="lazy"><span class="plate-cap">Pl. 8 — Maigre bête de la nuit</span></span></span></td>
+      <td class="txt">Gardiennage</td></tr>
+    <tr><td class="txt"><span class="spec" tabindex="0">Homme-serpent de Valusia<span class="plate"><img src="img/rh21/homme-serpent.jpg" alt="Homme-serpent de Valusia" loading="lazy"><span class="plate-cap">Pl. 9 — Homme-serpent de Valusia</span></span></span></td>
+      <td class="txt">Patrimoine</td></tr>
+    <tr><td class="txt"><span class="spec" tabindex="0">Ghast<span class="plate"><img src="img/rh21/ghast.jpg" alt="Ghast" loading="lazy"><span class="plate-cap">Pl. 10 — Ghast</span></span></span></td>
+      <td class="txt">Logistique</td></tr>
+    <tr><td class="txt"><span class="spec" tabindex="0">Gug<span class="plate"><img src="img/rh21/gug.jpg" alt="Gug" loading="lazy"><span class="plate-cap">Pl. 11 — Gug</span></span></span></td>
+      <td class="txt">Chantiers</td></tr>
+
+    <tr><td rowspan="5">3</td>
+      <td class="txt" rowspan="5"><ul class="specs">
+        <li>Directeur·rice de département</li>
+        <li>Responsable RH</li>
+        <li>Responsable Qualité &amp; Conformité Rituelle</li>
+        <li>Responsable des Achats (intrants)</li>
+        <li>Auditeur·rice interne</li>
+      </ul></td>
+      <td class="txt"><span class="spec" tabindex="0">Mi-go<span class="plate"><img src="img/rh21/mi-go.jpg" alt="Mi-go" loading="lazy"><span class="plate-cap">Pl. 12 — Mi-go</span></span></span></td>
+      <td class="txt">Méthodes</td></tr>
+    <tr><td class="txt"><span class="spec" tabindex="0">Chien de Tindalos<span class="plate"><img src="img/rh21/chien-tindalos.jpg" alt="Chien de Tindalos" loading="lazy"><span class="plate-cap">Pl. 13 — Chien de Tindalos</span></span></span></td>
+      <td class="txt">Qualité</td></tr>
+    <tr><td class="txt"><span class="spec" tabindex="0">Polype volant<span class="plate"><img src="img/rh21/polype-volant.jpg" alt="Polype volant" loading="lazy"><span class="plate-cap">Pl. 14 — Polype volant</span></span></span></td>
+      <td class="txt">Maintenance</td></tr>
+    <tr><td class="txt"><span class="spec" tabindex="0">Grand-Race de Yith<span class="plate"><img src="img/rh21/yith.jpg" alt="Grand-Race de Yith" loading="lazy"><span class="plate-cap">Pl. 15 — Grand-Race de Yith</span></span></span></td>
+      <td class="txt">Ressources humaines</td></tr>
+    <tr><td class="txt"><span class="spec" tabindex="0">Chthonien<span class="plate"><img src="img/rh21/chthonien.jpg" alt="Chthonien" loading="lazy"><span class="plate-cap">Pl. 16 — Chthonien</span></span></span></td>
+      <td class="txt">Immobilier</td></tr>
+
+    <tr><td rowspan="5">4</td>
+      <td class="txt" rowspan="5"><ul class="specs">
+        <li>Direction</li>
+        <li>Administrateur·rice</li>
+        <li>Prestataire de contrôle réglementaire (sur réservation)</li>
+        <li>Actionnaire de référence</li>
+      </ul></td>
+      <td class="txt"><span class="spec" tabindex="0">Shoggoth<span class="plate"><img src="img/rh21/shoggoth.jpg" alt="Shoggoth" loading="lazy"><span class="plate-cap">Pl. 17 — Shoggoth</span></span></span></td>
+      <td class="txt">Pôle Intrants</td></tr>
+    <tr><td class="txt"><span class="spec" tabindex="0">Ancien<span class="plate"><img src="img/rh21/ancien.jpg" alt="Ancien" loading="lazy"><span class="plate-cap">Pl. 18 — Ancien</span></span></span></td>
+      <td class="txt">Conseil scientifique</td></tr>
+    <tr><td class="txt"><span class="spec" tabindex="0">Père Dagon<span class="plate"><img src="img/rh21/pere-dagon.webp" alt="Père Dagon" loading="lazy"><span class="plate-cap">Pl. 19 — Père Dagon</span></span></span></td>
+      <td class="txt">Actionnariat</td></tr>
+    <tr><td class="txt"><span class="spec" tabindex="0">Mère Hydra<span class="plate"><img src="img/rh21/mere-hydra.jpg" alt="Mère Hydra" loading="lazy"><span class="plate-cap">Pl. 20 — Mère Hydra</span></span></span></td>
+      <td class="txt">Conseil d'administration</td></tr>
+    <tr><td class="txt"><span class="spec" tabindex="0">Rejeton stellaire<span class="plate"><img src="img/rh21/rejeton-stellaire.jpg" alt="Rejeton stellaire" loading="lazy"><span class="plate-cap">Pl. 21 — Rejeton stellaire</span></span></span></td>
+      <td class="txt">Comité de direction</td></tr>
+
+    <tr><td rowspan="4">5</td>
+      <td class="txt" rowspan="4"><ul class="specs">
+        <li>Consultant·e (supervision)</li>
+        <li>Entité de tutelle</li>
+      </ul></td>
+      <td class="txt"><span class="spec" tabindex="0">Sombre rejeton<span class="plate"><img src="img/rh21/sombre-rejeton.jpg" alt="Sombre rejeton de Shub-Niggurath" loading="lazy"><span class="plate-cap">Pl. 22 — Sombre rejeton</span></span></span></td>
+      <td class="txt">Approvisionnements</td></tr>
+    <tr><td class="txt"><span class="spec" tabindex="0">Rôdeur dimensionnel<span class="plate"><img src="img/rh21/rodeur.jpg" alt="Rôdeur dimensionnel" loading="lazy"><span class="plate-cap">Pl. 23 — Rôdeur dimensionnel</span></span></span></td>
+      <td class="txt">Livraisons</td></tr>
+    <tr><td class="txt"><span class="spec" tabindex="0">Larve amorphe de Tsathoggua<span class="plate"><img src="img/rh21/larve-tsathoggua.jpg" alt="Larve amorphe de Tsathoggua" loading="lazy"><span class="plate-cap">Pl. 24 — Larve amorphe</span></span></span></td>
+      <td class="txt">Pépinière de talents</td></tr>
+    <tr><td class="txt"><span class="spec" tabindex="0">Celui qu'on ne nomme pas<span class="plate"><img src="img/rh21/hastur.jpg" alt="Celui qu'on ne nomme pas" loading="lazy"><span class="plate-cap">Pl. 25 — Non communiqué</span></span></span></td>
+      <td class="txt">Non communiqué</td></tr>
+  </table>
+
+  <div class="footnote">RH-21 · Le palier n'est pas un grade et n'ouvre droit à aucune rémunération complémentaire. · Les exemples d'affectation sont donnés à titre indicatif. · Toute contestation du tirage relève du formulaire DR-7 (guichet unique, mardi 9&nbsp;h&nbsp;–&nbsp;9&nbsp;h&nbsp;20).</div>
+</section></div>
+</body>
+</html>

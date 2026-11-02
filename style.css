@@ -314,18 +314,20 @@
 
   /* ---------- organigramme ---------- */
   .org{margin:6px 0 10px}
-  .org-top{display:flex;justify-content:center;gap:26px;align-items:flex-start}
+  /* directoire centré (le trait part de lui), consultant décalé à droite */
+  .org-top{display:grid;grid-template-columns:1fr auto 1fr;gap:26px}
   .org-box{border:2px solid var(--corp);padding:9px 14px;background:#fff;text-align:center}
-  .org-dir{min-width:220px}
-  .org-sup{border-style:dashed;opacity:.85}
+  .org-dir{grid-column:2;min-width:220px;display:flex;flex-direction:column;justify-content:center}
+  .org-sup{grid-column:3;justify-self:start;border-style:dashed;opacity:.85}
   .org-t{font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--corp)}
   .org-n{font-size:12px;margin-top:2px}
   .org-s{font-size:10px;color:var(--ink-soft)}
   .org-stem{width:2px;height:16px;background:var(--corp);margin:0 auto}
-  .org-bar{height:2px;background:var(--corp);margin:0 11%}
-  .org-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:0}
+  /* la barre va du centre de la 1re BU au centre de la 3e (3 colonnes, 2 gouttières de 16px) */
+  .org-bar{height:2px;background:var(--corp);margin:0 calc((100% - 32px) / 6)}
+  .org-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:16px}
   .bu{border:1px solid var(--rule);background:#fff;position:relative;padding:0 10px 10px}
-  .bu::before{content:"";position:absolute;top:-16px;left:50%;width:2px;height:16px;background:var(--corp)}
+  .bu::before{content:"";position:absolute;top:-17px;left:50%;margin-left:-1px;width:2px;height:16px;background:var(--corp)}
   .bu-h{background:var(--corp);color:#fff;font-size:9.5px;font-weight:700;letter-spacing:.07em;text-align:center;padding:6px 4px;margin:0 -10px 10px}
   .dept{border:1px solid var(--rule);padding:6px 9px;margin-top:8px;background:#fcfcfa}
   .dept .org-t{font-size:10px}
@@ -338,10 +340,11 @@
   .pen-strike::after{content:"";position:absolute;left:-2px;right:30%;top:55%;height:2px;background:var(--pen);transform:rotate(-1.2deg)}
   @media print{.bu-h,.dept.you{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
   @media (max-width:640px){
-    .org-row{grid-template-columns:1fr}
+    .org-row{grid-template-columns:1fr;margin-top:0}
     .bu::before{display:none}
     .org-bar{display:none}
-    .org-top{flex-direction:column;align-items:stretch}
+    .org-top{grid-template-columns:1fr;gap:12px}
+    .org-dir,.org-sup{grid-column:1;justify-self:stretch}
   }
 
   /* ---------- offre ATS ---------- */

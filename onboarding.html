@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cthulhu Inc. — Parcours d'intégration</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{--corp:#0f5c63;--paper:#fcfcfa;--backdrop:#8d9089}
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){color-scheme:dark;--backdrop:#23262a}
+  }
+  :root[data-theme="dark"]{color-scheme:dark;--backdrop:#23262a}
+  html,body{margin:0;height:100%;background:var(--backdrop);font-family:"Archivo","Helvetica Neue",Arial,sans-serif}
+  iframe{display:block;width:100%;height:100%;border:0}
+
+  /* menu masqué : il descend quand la souris atteint le haut de l'écran */
+  .hotzone{position:fixed;top:0;left:0;right:0;height:14px;z-index:30}
+  .menu{
+    position:fixed;top:0;left:0;right:0;z-index:40;
+    display:flex;align-items:center;gap:6px;flex-wrap:wrap;
+    padding:8px 16px;background:var(--corp);color:#fff;
+    box-shadow:0 4px 14px #00000040;
+    transform:translateY(-100%);transition:transform .18s ease-out;
+  }
+  .menu.open{transform:none}
+  .menu-title{font-weight:700;font-size:12px;letter-spacing:.14em;margin-right:14px}
+  .menu a{
+    color:#fff;text-decoration:none;font-size:12.5px;padding:6px 10px;
+    border-bottom:2px solid transparent;
+  }
+  .menu a .ref{font-family:"Courier Prime",monospace;font-size:11px;opacity:.75;margin-right:5px}
+  .menu a:hover{border-bottom-color:#ffffff80}
+  .menu a.on{border-bottom-color:#fff}
+  .menu .back{margin-left:auto;opacity:.85}
+
+  /* sans souris : une languette toujours visible ouvre le menu */
+  .tab{
+    display:none;position:fixed;top:0;right:0;z-index:45;
+    background:var(--corp);color:#fff;border:0;border-radius:0 0 0 6px;
+    font:700 11px "Archivo",sans-serif;letter-spacing:.12em;padding:6px 12px;
+  }
+  @media (hover:none){
+    .tab{display:block}
+    .hotzone{display:none}
+    .menu{padding-right:84px}
+  }
+</style>
+</head>
+<body>
+<div class="hotzone" id="hotzone"></div>
+<button class="tab" id="tab" type="button">MENU</button>
+<nav class="menu" id="menu">
+  <span class="menu-title">PARCOURS D'INTÉGRATION</span>
+  <a href="#paliers" data-page="rh21.html"><span class="ref">RH-21</span>Grille des paliers</a>
+  <a href="#fiche" data-page="fiche.html"><span class="ref">RH-22</span>Fiche collaborateur</a>
+  <a class="back" href="index.html">&larr; retour au panneau</a>
+</nav>
+<iframe id="frame" title="Document du parcours d'intégration"></iframe>
+
+<script>
+(function(){
+  var menu=document.getElementById('menu');
+  var frame=document.getElementById('frame');
+  var links=menu.querySelectorAll('a[data-page]');
+  var closeTimer=null;
+
+  var tab=document.getElementById('tab');
+  function setOpen(on){ menu.classList.toggle('open', on); tab.textContent=on?'FERMER':'MENU'; }
+  function open(){ clearTimeout(closeTimer); setOpen(true); }
+  function close(){ clearTimeout(closeTimer); closeTimer=setTimeout(function(){ setOpen(false); },250); }
+
+  function show(){
+    var hash=location.hash||'#paliers', current=links[0];
+    for(var i=0;i<links.length;i++) if(links[i].getAttribute('href')===hash) current=links[i];
+    for(var j=0;j<links.length;j++) links[j].classList.toggle('on', links[j]===current);
+    if(frame.getAttribute('src')!==current.dataset.page) frame.setAttribute('src', current.dataset.page);
+  }
+
+  document.getElementById('hotzone').addEventListener('mouseenter', open);
+  document.getElementById('hotzone').addEventListener('mouseleave', close);
+  menu.addEventListener('mouseenter', open);
+  menu.addEventListener('mouseleave', close);
+  tab.addEventListener('click', function(){ setOpen(!menu.classList.contains('open')); });
+  window.addEventListener('hashchange', function(){ show(); setOpen(false); });
+  show();
+})();
+</script>
+</body>
+</html>

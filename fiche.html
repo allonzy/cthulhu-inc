@@ -60,6 +60,11 @@
     font-family:"Reenie Beanie",cursive;font-size:25px;color:var(--pen);
     padding:0;line-height:1.1;
   }
+  textarea{
+    display:block;width:100%;border:0;outline:0;background:transparent;resize:vertical;
+    font-family:"Reenie Beanie",cursive;font-size:22px;color:var(--pen);
+    padding:0;line-height:1.2;
+  }
   input[type=number]{
     width:48px;border:1px solid var(--rule);background:#fff;color:var(--ink);
     font-family:"Courier Prime",monospace;font-size:12px;padding:2px 4px;
@@ -74,6 +79,17 @@
     cursor:pointer;user-select:none;background:#fff;
   }
   .pal.on{background:var(--corp);color:#fff}
+
+  /* valeur numérique */
+  .numval{padding:10px}
+  .numval input[type=number]{width:64px;font-size:20px;padding:4px 6px}
+
+  /* champ sur une ligne : libellé à gauche, valeur à droite */
+  .field.inline{display:flex;align-items:stretch}
+  .field.inline .lab{flex:1;min-width:0;border-bottom:0;border-right:1px solid var(--rule);gap:10px}
+  .field.inline .numval,.field.inline .track{display:flex;align-items:center;flex:none;flex-wrap:nowrap;padding:6px 10px}
+  .field.inline .maxctl{white-space:nowrap}
+  .field.inline .numval input[type=number]{font-size:17px;padding:2px 6px}
 
   /* pistes */
   .track{display:flex;flex-wrap:wrap;gap:7px;padding:10px}
@@ -110,7 +126,7 @@
   .modal h2{margin:0 0 10px;font-size:16px;color:var(--blood)}
   .modal p{font-size:13px;margin:0 0 10px}
   .modal .row{display:flex;gap:12px;justify-content:flex-end;margin-top:18px}
-  .btn-cancel{background:#f1f2ed;border:1px solid var(--rule);padding:8px 14px;font-size:12.5px}
+  .btn-cancel{background:#f1f2ed;border:1px solid var(--rule);color:var(--ink);padding:8px 14px;font-size:12.5px}
   .btn-confirm{background:var(--blood);border:2px solid var(--blood);color:#fff;font-weight:700;padding:8px 14px;font-size:12.5px}
 
   .dead-stamp{
@@ -186,21 +202,29 @@
 
       <div class="field" style="grid-column:1/-1">
         <div class="lab">CAPITAL SANTÉ (PV)
-          <span class="maxctl">max <input type="number" id="pvMax" min="1" max="25"> / 25</span>
+          <span class="maxctl">max <input type="number" id="pvMax" min="1"></span>
         </div>
         <div class="track" id="pv"></div>
       </div>
 
-      <div class="field">
-        <div class="lab">POINTS DE COMBAT
-          <span class="maxctl">max <input type="number" id="cbMax" min="1" max="10"> / 10</span>
-        </div>
-        <div class="track" id="cb"></div>
+      <div class="field inline">
+        <div class="lab">POINTS DE COMBAT</div>
+        <div class="numval"><input type="number" id="cb" min="0"></div>
+      </div>
+
+      <div class="field inline">
+        <div class="lab">POINTS DE CHANCE</div>
+        <div class="track" id="ch"></div>
       </div>
 
       <div class="field">
-        <div class="lab">POINTS DE CHANCE <span class="maxctl">max 3</span></div>
-        <div class="track" id="ch"></div>
+        <div class="lab">INVENTAIRE</div>
+        <div class="val"><textarea id="inventaire" rows="6" placeholder="matériel confié" autocomplete="off"></textarea></div>
+      </div>
+
+      <div class="field">
+        <div class="lab">NOTES</div>
+        <div class="val"><textarea id="notes" rows="6" placeholder="observations" autocomplete="off"></textarea></div>
       </div>
     </div>
 
@@ -243,7 +267,7 @@
     "L'actif de la mutuelle — l'âme est réaffectée au premier corps libre",
     "Le cousin — M. Nyarlathotep « connaît quelqu'un »"
   ];
-  var DEF={nom:'',fonction:'',palier:1,pvMax:20,pv:20,cbMax:6,cb:6,ch:3,mort:false,reins:null,silenceEnd:null};
+  var DEF={nom:'',fonction:'',inventaire:'',notes:'',palier:1,pvMax:20,pv:20,cb:6,ch:4,mort:false,reins:null,silenceEnd:null};
   var S;
 
   function load(){
@@ -261,7 +285,6 @@
 
   var $=function(id){return document.getElementById(id)};
   var heart='<svg viewBox="0 0 24 24"><path class="fill" d="M12 20.3C6.4 16 3 12.8 3 9.1 3 6.4 5.1 4.5 7.6 4.5c1.7 0 3.3.9 4.4 2.4 1.1-1.5 2.7-2.4 4.4-2.4 2.5 0 4.6 1.9 4.6 4.6 0 3.7-3.4 6.9-9 11.2z"/></svg>';
-  var pip='<svg viewBox="0 0 24 24"><rect class="fill" x="4" y="4" width="16" height="16" rx="2"/></svg>';
   var dia='<svg viewBox="0 0 24 24"><path class="fill" d="M12 2.6 21.4 12 12 21.4 2.6 12z"/></svg>';
 
   function buildTrack(el, max, val, glyph, extra, onSet){
@@ -272,7 +295,7 @@
         d.className='tick'+(extra?' '+extra:'')+(i<val?' on':'');
         d.innerHTML=glyph;
         d.title=(i+1)+' / '+max;
-        d.onclick=function(){ onSet(i+1===val()?i:i+1); };
+        d.onclick=function(){ onSet(i+1===val?i:i+1); };
         el.appendChild(d);
       })(i);
     }
@@ -282,7 +305,7 @@
     for(var p=1;p<=5;p++){
       (function(p){
         var d=document.createElement('span');
-        d.className='pal'+(p<=S.palier?' on':'');
+        d.className='pal'+(p===S.palier?' on':'');
         d.textContent=p;
         d.onclick=function(){ S.palier=p; save(); render(); };
         el.appendChild(d);
@@ -291,24 +314,25 @@
   }
   function render(){
     $('nom').value=S.nom; $('fonction').value=S.fonction;
-    $('pvMax').value=S.pvMax; $('cbMax').value=S.cbMax;
+    $('inventaire').value=S.inventaire; $('notes').value=S.notes;
+    $('pvMax').value=S.pvMax; $('cb').value=S.cb;
     buildPaliers();
     buildTrack($('pv'), S.pvMax, S.pv, heart, '', function(v){S.pv=v;save();render();});
-    buildTrack($('cb'), S.cbMax, S.cb, pip, '', function(v){S.cb=v;save();render();});
-    buildTrack($('ch'), 3, S.ch, dia, 'chance', function(v){S.ch=v;save();render();});
+    buildTrack($('ch'), 4, S.ch, dia, 'chance', function(v){S.ch=v;save();render();});
     document.getElementById('doc').classList.toggle('dead', !!S.mort);
     if(S.mort) renderDeath();
   }
 
   $('nom').addEventListener('input',function(){S.nom=this.value;save();});
   $('fonction').addEventListener('input',function(){S.fonction=this.value;save();});
+  $('inventaire').addEventListener('input',function(){S.inventaire=this.value;save();});
+  $('notes').addEventListener('input',function(){S.notes=this.value;save();});
   $('pvMax').addEventListener('change',function(){
-    var v=Math.max(1,Math.min(25,parseInt(this.value)||1));
+    var v=Math.max(1,parseInt(this.value)||1);
     S.pvMax=v; S.pv=Math.min(S.pv,v); save(); render();
   });
-  $('cbMax').addEventListener('change',function(){
-    var v=Math.max(1,Math.min(10,parseInt(this.value)||1));
-    S.cbMax=v; S.cb=Math.min(S.cb,v); save(); render();
+  $('cb').addEventListener('change',function(){
+    S.cb=Math.max(0,parseInt(this.value)||0); save(); render();
   });
 
   /* ---- décès ---- */
