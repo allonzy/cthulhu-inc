@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cthulhu Inc. — Documents internes RH-23</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Redacted+Script&family=Reenie+Beanie&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<base target="_top">
+<style>
+  table{font-size:14px}
+  th{font-size:12px}
+  .redact{display:inline-block;width:11em;max-width:100%;height:.95em;vertical-align:-.1em;background:var(--ink);opacity:.85}
+  tr.locked td{color:var(--ink-soft)}
+  a.open{color:var(--corp);font-weight:600}
+  .palier-courant{font-family:"Courier Prime",monospace;color:var(--corp)}
+</style>
+</head>
+<body>
+<div class="shelf">
+<a class="backlink" href="index.html">&larr; retour au panneau</a>
+<!-- ============ RH-23. DOCUMENTS INTERNES ============ -->
+<section class="doc">
+  <div class="letterhead">
+    <div class="mark">
+      <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true">
+        <circle cx="17" cy="17" r="15.4" fill="none" stroke="#0f5c63" stroke-width="2.2"/>
+        <path d="M17 8.4c-3.1 0-5.2 2-5.2 4.6 0 2.2 1.5 3.4 1.5 5.1 0 1.9-1.9 2.4-1.9 4.4M17 8.4c3.1 0 5.2 2 5.2 4.6 0 2.2-1.5 3.4-1.5 5.1 0 1.9 1.9 2.4 1.9 4.4M17 12.6v11.8" fill="none" stroke="#0f5c63" stroke-width="1.9" stroke-linecap="round"/>
+      </svg>
+      <div>
+        <div class="mark-name">CTHULHU INC.</div>
+        <div class="mark-sub">Direction des Ressources Humaines</div>
+      </div>
+    </div>
+    <div class="refblock">
+      Réf. <b>RH-23</b><br>
+      Habilitation <b>selon palier</b><br>
+      Diffusion <b>restreinte</b>
+    </div>
+  </div>
+
+  <h1 class="doctitle">Documents internes</h1>
+  <p class="docsub">Accès accordé selon le palier inscrit sur la fiche collaborateur RH-22. Palier constaté : <span class="palier-courant" id="palier">1</span>.</p>
+
+  <table>
+    <tr><th style="width:90px">Réf.</th><th>Document</th><th style="width:110px">Palier requis</th><th style="width:100px">Accès</th></tr>
+    <tbody id="docs"></tbody>
+  </table>
+  <p class="fine" id="vide"></p>
+
+  <div class="footnote">RH-23 · L'habilitation est cumulative : chaque palier donne accès aux documents des paliers inférieurs. · Toute demande d'accès anticipé relève du formulaire DR-7 (guichet unique, mardi 9&nbsp;h&nbsp;–&nbsp;9&nbsp;h&nbsp;20).</div>
+</section></div>
+
+<script>
+(function(){
+  var DOCS=[
+    {ref:'FP-3',    titre:'Fiche phonétique — syllabe finale',  palier:2, url:'interne/fp3.html'},
+    {ref:'RC-14',   titre:'Registre de conformité',             palier:2, url:'interne/rc14.html'},
+    {ref:'—',       titre:'Notes de frais — octobre',           palier:3, url:'interne/frais.html'},
+    {ref:'BL-8871', titre:'Bons de commande & de livraison',    palier:3, url:'interne/bl8871.html'},
+    {ref:'ET-03',   titre:'Bilan comptable du trimestre',       palier:4, url:'interne/et03.html'},
+    {ref:'PS-15',   titre:'Protocole de départ',                palier:4, url:'interne/ps15.html'},
+    {ref:'MUT-01',  titre:'Mutuelle collective — notice',       palier:5, url:'interne/mut01.html'}
+  ];
+
+  /* palier lu sur la fiche RH-22 (même stockage local), palier 1 à défaut */
+  function palier(){
+    try{
+      var o=JSON.parse(localStorage.getItem('cthulhu-inc-fiche-rh22')||'{}');
+      var p=parseInt(o.palier,10);
+      return p>=1&&p<=5 ? p : 1;
+    }catch(e){ return 1; }
+  }
+
+  function render(){
+    var p=palier(), body=document.getElementById('docs'), ouverts=0;
+    document.getElementById('palier').textContent=p;
+    body.textContent='';
+    DOCS.forEach(function(d){
+      var ok=p>=d.palier, tr=document.createElement('tr');
+      if(!ok) tr.className='locked';
+      var ref=document.createElement('td'); ref.textContent=d.ref;
+      var titre=document.createElement('td'); titre.className='txt';
+      if(ok){ titre.textContent=d.titre; }
+      else{ var r=document.createElement('span'); r.className='redact'; r.title='Contenu réservé'; titre.appendChild(r); }
+      var req=document.createElement('td'); req.textContent='palier '+d.palier;
+      var acc=document.createElement('td'); acc.className='txt';
+      if(ok){ var a=document.createElement('a'); a.className='open'; a.href=d.url; a.textContent='Consulter'; acc.appendChild(a); ouverts++; }
+      else{ acc.textContent='non habilité'; }
+      tr.appendChild(ref); tr.appendChild(titre); tr.appendChild(req); tr.appendChild(acc);
+      body.appendChild(tr);
+    });
+    document.getElementById('vide').textContent = ouverts ? '' :
+      'Aucun document n\'est accessible au palier '+p+'. Les documents internes sont communiqués à partir du palier 2.';
+  }
+
+  window.addEventListener('storage', function(e){ if(e.key==='cthulhu-inc-fiche-rh22') render(); });
+  render();
+})();
+</script>
+</body>
+</html>

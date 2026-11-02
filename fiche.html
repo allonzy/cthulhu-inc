@@ -490,6 +490,11 @@
     if(!timer && (S.silenceEnd||0)>Date.now()) timer=setInterval(tick,500);
   }
 
+  /* fiche ouverte dans un autre onglet : reprendre les achats du catalogue KUD-01 */
+  window.addEventListener('storage',function(e){
+    if(e.key===KEY){ S=load()||Object.assign({},DEF); render(); }
+  });
+
   $('btnNew').onclick=function(){
     S=Object.assign({},DEF,{fonction:S.fonction,departement:S.departement});
     save();

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cthulhu Inc. — Catalogue Kudos KUD-01</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Redacted+Script&family=Reenie+Beanie&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<base target="_top">
+<style>
+  table{font-size:14px}
+  th{font-size:12px}
+  tr.locked td{color:var(--ink-soft);opacity:.7}
+  .bonus{font-family:"Courier Prime",monospace;font-weight:700;color:var(--corp);white-space:nowrap}
+  .dispo{font-size:12px}
+  tr:not(.locked) .dispo{color:var(--corp);font-weight:600}
+  .palier-courant{font-family:"Courier Prime",monospace;color:var(--corp)}
+  .table-scroll{overflow-x:auto}
+  .buy{
+    font:600 12px "Archivo",sans-serif;color:#fff;background:var(--corp);
+    border:1px solid var(--corp);padding:3px 10px;cursor:pointer;white-space:nowrap;
+  }
+  .buy.done{background:#fff;color:var(--corp)}
+</style>
+</head>
+<body>
+<div class="shelf">
+<a class="backlink" href="index.html">&larr; retour au panneau</a>
+<!-- ============ KUD-01. CATALOGUE KUDOS ============ -->
+<section class="doc">
+  <div class="letterhead">
+    <div class="mark">
+      <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true">
+        <circle cx="17" cy="17" r="15.4" fill="none" stroke="#0f5c63" stroke-width="2.2"/>
+        <path d="M17 8.4c-3.1 0-5.2 2-5.2 4.6 0 2.2 1.5 3.4 1.5 5.1 0 1.9-1.9 2.4-1.9 4.4M17 8.4c3.1 0 5.2 2 5.2 4.6 0 2.2-1.5 3.4-1.5 5.1 0 1.9 1.9 2.4 1.9 4.4M17 12.6v11.8" fill="none" stroke="#0f5c63" stroke-width="1.9" stroke-linecap="round"/>
+      </svg>
+      <div>
+        <div class="mark-name">CTHULHU INC.</div>
+        <div class="mark-sub">Programme de reconnaissance Kudos</div>
+      </div>
+    </div>
+    <div class="refblock">
+      Réf. <b>KUD-01</b><br>
+      Catalogue <b>octobre</b><br>
+      Retrait <b>guichet unique</b>
+    </div>
+  </div>
+
+  <h1 class="doctitle">Catalogue des dotations Kudos</h1>
+  <p class="docsub">Les points Kudos récompensent l'engagement. Ils sont convertibles en dotations professionnelles, dans la limite du palier inscrit sur la fiche RH-22. Palier constaté : <span class="palier-courant" id="palier">1</span>.</p>
+
+  <div class="art">
+    <div class="art-n">Art. 1</div>
+    <div class="art-t">Chaque dotation est réservée à un palier minimum (grille RH-21). Les dotations des paliers inférieurs restent accessibles.</div>
+  </div>
+  <div class="art">
+    <div class="art-n">Art. 2</div>
+    <div class="art-t">Les bonus s'ajoutent à l'attaque (<span class="mono">ATT</span>) ou à la défense (<span class="mono">DÉF</span>) du collaborateur, pour la durée de la mission.</div>
+  </div>
+  <div class="art">
+    <div class="art-n">Art. 3</div>
+    <div class="art-t">Le matériel reste la propriété de l'entreprise. Il est restitué à la Logistique en fin de mission, de contrat ou de collaborateur.</div>
+  </div>
+
+  <h2 class="fine" style="margin:22px 0 6px;font-weight:600;letter-spacing:.06em">ÉQUIPEMENT D'INTERVENTION</h2>
+  <div class="table-scroll"><table>
+    <tr><th style="width:70px">Réf.</th><th>Dotation</th><th style="width:70px">Bonus</th><th class="num" style="width:80px">Kudos</th><th style="width:150px">Disponibilité</th><th style="width:90px"></th></tr>
+    <tbody id="att"></tbody>
+  </table></div>
+
+  <h2 class="fine" style="margin:22px 0 6px;font-weight:600;letter-spacing:.06em">ÉQUIPEMENT DE PROTECTION</h2>
+  <div class="table-scroll"><table>
+    <tr><th style="width:70px">Réf.</th><th>Dotation</th><th style="width:70px">Bonus</th><th class="num" style="width:80px">Kudos</th><th style="width:150px">Disponibilité</th><th style="width:90px"></th></tr>
+    <tbody id="def"></tbody>
+  </table></div>
+
+  <div class="footnote">KUD-01 · Les points Kudos n'ont pas de valeur monétaire et ne sont pas transmissibles aux ayants droit. · Une dotation par catégorie et par mission. · Toute réclamation relève du formulaire DR-7 (guichet unique, mardi 9&nbsp;h&nbsp;–&nbsp;9&nbsp;h&nbsp;20).</div>
+</section></div>
+
+<script>
+(function(){
+  var ATT=[
+    {ref:'K-101', nom:'Agrafeuse de bureau lestée',                   bonus:1, prix:5,  palier:1},
+    {ref:'K-102', nom:'Coupe-papier réglementaire',                   bonus:1, prix:5,  palier:1},
+    {ref:'K-103', nom:'Encensoir à chaîne renforcée',                 bonus:2, prix:12, palier:2},
+    {ref:'K-104', nom:'Parapluie de direction, pointe acier',         bonus:2, prix:12, palier:2},
+    {ref:'K-105', nom:'Pied de micro du chœur',                       bonus:3, prix:20, palier:3},
+    {ref:'K-106', nom:'Extincteur CO₂ (usage détourné non couvert)',  bonus:3, prix:20, palier:3},
+    {ref:'K-107', nom:'Massicot portatif',                            bonus:4, prix:35, palier:4},
+    {ref:'K-108', nom:'Dague cérémonielle, série limitée',            bonus:4, prix:35, palier:4},
+    {ref:'K-109', nom:'Hache d\'incendie de la salle des fêtes',      bonus:5, prix:50, palier:5},
+    {ref:'K-110', nom:'Sceptre de la Direction',                      bonus:6, prix:80, palier:5}
+  ];
+  var DEF=[
+    {ref:'K-201', nom:'Gilet haute visibilité',                       bonus:1, prix:6,  palier:1},
+    {ref:'K-202', nom:'Tablier de sacristie en cuir',                 bonus:1, prix:6,  palier:2},
+    {ref:'K-203', nom:'Combinaison de manutention des intrants',      bonus:2, prix:25, palier:3},
+    {ref:'K-204', nom:'Bouclier anti-émeute (stock CSE)',             bonus:2, prix:25, palier:3},
+    {ref:'K-205', nom:'Armure de la collection Patrimoine',           bonus:3, prix:45, palier:4},
+    {ref:'K-206', nom:'Scaphandre du Bassin profond',                 bonus:3, prix:60, palier:5}
+  ];
+
+  var KEY='cthulhu-inc-fiche-rh22';
+
+  /* palier lu sur la fiche RH-22 (même stockage local), palier 1 à défaut */
+  function palier(){
+    try{
+      var o=JSON.parse(localStorage.getItem(KEY)||'{}');
+      var p=parseInt(o.palier,10);
+      return p>=1&&p<=5 ? p : 1;
+    }catch(e){ return 1; }
+  }
+
+  /* l'achat ajoute une ligne à l'inventaire de la fiche RH-22 */
+  function acheter(d, code, btn){
+    try{
+      var o=JSON.parse(localStorage.getItem(KEY)||'{}');
+      var ligne=d.nom+' ('+code+' +'+d.bonus+')';
+      o.inventaire=(o.inventaire ? o.inventaire.replace(/\s+$/,'')+'\n' : '')+ligne;
+      localStorage.setItem(KEY, JSON.stringify(o));
+      btn.textContent='Ajouté ✓'; btn.classList.add('done');
+      setTimeout(function(){ btn.textContent='Acheter'; btn.classList.remove('done'); }, 1500);
+    }catch(e){
+      btn.textContent='Indisponible';
+    }
+  }
+
+  function remplir(id, liste, code, p){
+    var body=document.getElementById(id);
+    body.textContent='';
+    liste.forEach(function(d){
+      var ok=p>=d.palier, tr=document.createElement('tr');
+      if(!ok) tr.className='locked';
+      function td(txt, cls){ var c=document.createElement('td'); if(cls) c.className=cls; c.textContent=txt; tr.appendChild(c); }
+      td(d.ref);
+      td(d.nom, 'txt');
+      td(code+' +'+d.bonus, 'bonus');
+      td(d.prix, 'num');
+      td(ok ? 'disponible' : 'réservé palier '+d.palier, 'txt dispo');
+      var cell=document.createElement('td');
+      if(ok){
+        var b=document.createElement('button');
+        b.type='button'; b.className='buy'; b.textContent='Acheter';
+        b.onclick=function(){ acheter(d, code, b); };
+        cell.appendChild(b);
+      }
+      tr.appendChild(cell);
+      body.appendChild(tr);
+    });
+  }
+
+  function render(){
+    var p=palier();
+    document.getElementById('palier').textContent=p;
+    remplir('att', ATT, 'ATT', p);
+    remplir('def', DEF, 'DÉF', p);
+  }
+
+  window.addEventListener('storage', function(e){ if(e.key==='cthulhu-inc-fiche-rh22') render(); });
+  render();
+})();
+</script>
+</body>
+</html>
