@@ -53,7 +53,7 @@
 
 <script>
 (function(){
-  var ROWS=7, COLS=5, CHRONO=5000;
+  var ROWS=7, COLS=5, CHRONO=8000;
   var $=function(id){ return document.getElementById(id); };
   var role=null, pieges=null, ici=null, passees={}, brulees={}, degats=0, dernier='', fin=null;
   var echeance=0, pause=false, resteEnPause=0, tic=null;
@@ -105,7 +105,7 @@
     rendre();
   }
 
-  /* chrono du traverseur : 5 s par feuille, 1 dégât à chaque fois qu'il atteint 0 */
+  /* chrono du traverseur : 8 s par feuille, 1 dégât à chaque fois qu'il atteint 0 */
   function arreter(){ if(tic){ clearInterval(tic); tic=null; } }
   function relancer(){ echeance=Date.now()+CHRONO; if(!tic) tic=setInterval(battre,100); }
   function battre(){
