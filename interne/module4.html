@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cthulhu Inc. — Module 4</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+<style>
+  .setup{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin:0 0 16px}
+  .setup select{font:600 13px "Archivo",sans-serif;padding:5px 6px;border:1px solid var(--rule);background:#fff;color:var(--ink)}
+  .btn{font:600 13px "Archivo",sans-serif;padding:6px 14px;border:1px solid var(--corp);background:#fff;color:var(--corp);cursor:pointer}
+  .btn.on{background:var(--corp);color:#fff}
+
+  .plateau{max-width:520px;margin:0 auto}
+  .zone{font-family:"Courier Prime",monospace;font-size:11px;letter-spacing:.12em;color:var(--ink-soft);text-align:center;padding:7px;border:1px dashed var(--rule);margin:6px 0}
+  .zone.ok{border:1px solid var(--corp);color:var(--corp);background:#fff;cursor:pointer}
+  .sol{display:grid;grid-template-columns:22px repeat(5,1fr);gap:6px;align-items:center}
+  .coord{font-family:"Courier Prime",monospace;font-size:11px;color:var(--ink-soft);text-align:center}
+  .f{aspect-ratio:1/1;background:#fff;border:1px solid var(--rule);box-shadow:0 1px 3px #0002}
+  .f.go{cursor:pointer;outline:2px solid var(--corp);outline-offset:1px}
+  .f.ici{background:var(--pen)}
+  .f.passe{background:#d9d4c7}
+  .f.piege{background:var(--ink)}
+  .f.brule{background:#7a2e1f}
+  .f.ici.brule{box-shadow:inset 0 0 0 4px var(--pen)}
+  .msg{text-align:center;font-weight:600;margin:12px 0 6px;min-height:1.4em}
+  .legende{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 16px;font-size:12px;color:var(--ink-soft);margin-top:10px}
+  .legende span{display:inline-flex;align-items:center;gap:6px}
+  .interdits{border:1px solid var(--rule);background:#fff;padding:10px 12px;margin-top:14px;font-size:14px;line-height:1.5}
+  .interdits .titre{font-size:11px;font-weight:700;letter-spacing:.12em;color:var(--ink-soft);margin-bottom:4px}
+  .interdits .ligne{color:var(--ink-soft)}
+  .interdits .ligne.nouveau{color:var(--ink)}
+  .legende .f{width:14px;aspect-ratio:auto;height:14px;box-shadow:none}
+</style>
+</head>
+<body>
+<div class="shelf">
+<section class="doc">
+  <h1 class="doctitle" style="margin-top:0">Module 4 — la rivière de lave</h1>
+
+  <div class="setup">
+    <select id="passage"><option value="0">Passage 1</option><option value="1">Passage 2</option><option value="2">Passage 3</option></select>
+    <button class="btn" data-role="t">Traverseur</button>
+    <button class="btn" data-role="g">Guide</button>
+  </div>
+
+  <div class="plateau" id="plateau"></div>
+</section></div>
+
+<script>
+(function(){
+  var ROWS=7, COLS=5, LETTRES='ABCDE';
+  var $=function(id){ return document.getElementById(id); };
+  var role=null, pieges=null, ici=null, passees={}, brulees={}, degats=0, dernier='', fin=null;
+
+  /* plateaux fixes, rangée 7 en haut : X = piège, . = sûre
+     passage 1 : B1 B2 A3 A4 A5 B5 B6 B7 (ou C2 C3 D3 D4 D5 D6 E7)
+     passage 2 : B1 A2 A3 B4 C5 B6 A7
+     passage 3 : D1 C2 D3 D4 C4 B4 B5 C6 D7 */
+  var PLATEAUX=[
+    ['X.XX.',
+     'X.X.X',
+     '..X.X',
+     '.XX..',
+     '.X..X',
+     '...XX',
+     'X.XX.'],
+    ['.XXXX',
+     'X.XXX',
+     'XX.X.',
+     'X.X.X',
+     '.X.XX',
+     '.XX.X',
+     'X.XXX'],
+    ['XXX.X',
+     'XX.XX',
+     'X.XXX',
+     'X...X',
+     'XXX.X',
+     'XX.XX',
+     'XXX.X']
+  ];
+
+  var MOTS=[
+    ['gauche','droite','devant','derrière','tout droit','en haut','en bas','en face','à côté'],
+    ['avance','recule','saute','stop','attends','vas-y','marche','bouge','reviens','continue'],
+    ['là','ici','ça','toi','moi','non','oui','celle-là','voilà','cette case']
+  ];
+
+  function voisins(r,c){
+    return [[r+1,c-1],[r+1,c],[r+1,c+1],[r,c-1],[r,c+1]].filter(function(v){ return v[0]<ROWS&&v[1]>=0&&v[1]<COLS; });
+  }
+
+  function nouvelle(){
+    var plan=PLATEAUX[parseInt($('passage').value,10)];
+    pieges=[];
+    for(var r=0;r<ROWS;r++){ pieges.push([]); for(var c=0;c<COLS;c++) pieges[r].push(plan[ROWS-1-r][c]==='X'); }
+    ici=null; passees={}; brulees={}; degats=0; dernier=''; fin=null;
+    rendre();
+  }
+
+  function accessibles(){
+    var a={};
+    if(fin) return a;
+    if(!ici){ for(var c=0;c<COLS;c++) a['0,'+c]=1; return a; }
+    voisins(ici[0],ici[1]).forEach(function(v){ if(!passees[v+'']) a[v+'']=1; });
+    return a;
+  }
+
+  function marcher(r,c){
+    if(ici) passees[ici+'']=1;
+    ici=[r,c];
+    dernier='';
+    /* un piège ne fait pas tomber : il brûle (1d4) et on continue */
+    if(pieges[r][c]){
+      var d=1+Math.floor(Math.random()*4);
+      degats+=d; brulees[r+','+c]=1;
+      dernier='Piège ! 1d4 = '+d+' dégâts.';
+    }
+    rendre();
+  }
+
+  function el(tag,cls,txt){ var e=document.createElement(tag); if(cls) e.className=cls; if(txt!=null) e.textContent=txt; return e; }
+
+  function rendre(){
+    document.querySelectorAll('.setup .btn').forEach(function(b){ b.classList.toggle('on', b.dataset.role===role); });
+    var p=$('plateau'); p.textContent='';
+    if(!role) return;
+
+    var auBout=role==='t'&&ici&&ici[0]===ROWS-1&&!fin;
+    var sortie=el('div','zone'+(auBout?' ok':''),'SORTIE');
+    if(auBout) sortie.onclick=function(){ fin='sortie'; rendre(); };
+    p.appendChild(sortie);
+
+    var acc=role==='t'?accessibles():{};
+    var g=el('div','sol');
+    for(var r=ROWS-1;r>=0;r--){
+      g.appendChild(el('div','coord',String(r+1)));
+      for(var c=0;c<COLS;c++){
+        (function(r,c){
+          var k=r+','+c, f=el('div','f');
+          if(role==='g'){ if(pieges[r][c]) f.classList.add('piege'); }
+          else{
+            if(passees[k]) f.classList.add('passe');
+            if(brulees[k]) f.classList.add('brule');
+            if(ici&&ici[0]===r&&ici[1]===c) f.classList.add('ici');
+            if(acc[k]){ f.classList.add('go'); f.onclick=function(){ marcher(r,c); }; }
+          }
+          g.appendChild(f);
+        })(r,c);
+      }
+    }
+    g.appendChild(el('div'));
+    for(var c=0;c<COLS;c++) g.appendChild(el('div','coord',LETTRES[c]));
+    p.appendChild(g);
+    p.appendChild(el('div','zone','ENTRÉE'));
+
+    var leg=el('div','legende');
+    function item(cls,txt){ var s=el('span'); s.appendChild(el('i','f '+cls)); s.appendChild(document.createTextNode(txt)); leg.appendChild(s); }
+    if(role==='g'){ item('','case sûre'); item('piege','piège (1d4 dégâts)'); }
+    else{ item('go','case accessible'); item('ici','vous êtes ici'); item('passe','case quittée'); item('brule','piège (1d4 dégâts)'); }
+    p.appendChild(leg);
+
+    /* mots interdits au guide : ils se cumulent d'un passage à l'autre */
+    if(role==='g'){
+      var n=parseInt($('passage').value,10), box=el('div','interdits');
+      box.appendChild(el('div','titre','MOTS INTERDITS'));
+      for(var i=0;i<=n;i++){
+        var ligne=el('div','ligne'+(i===n?' nouveau':''));
+        ligne.appendChild(el('b',null,'Passage '+(i+1)+(i>0?' (en plus)':'')+' : '));
+        ligne.appendChild(document.createTextNode(MOTS[i].map(function(m){ return '« '+m+' »'; }).join(' · ')));
+        box.appendChild(ligne);
+      }
+      p.appendChild(box);
+    }
+
+    if(role==='t'){
+      var bilan=degats ? 'Dégâts subis : '+degats+'.' : '';
+      p.appendChild(el('div','msg', fin==='sortie' ? ('Traversée réussie. '+bilan).trim() : (dernier+' '+bilan).trim()));
+      if(fin){ var b=el('button','btn','Recommencer'); b.style.display='block'; b.style.margin='0 auto'; b.onclick=nouvelle; p.appendChild(b); }
+    }
+  }
+
+  document.querySelectorAll('.setup .btn').forEach(function(b){ b.onclick=function(){ role=b.dataset.role; nouvelle(); }; });
+  $('passage').addEventListener('change',nouvelle);
+})();
+</script>
+</body>
+</html>
