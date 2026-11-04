@@ -19,14 +19,9 @@
   th{font-size:12px}
   @media (max-width:640px){
     table{font-size:12.5px} th{font-size:11px}
-    .affect .depts{padding-left:16px}
     .table-scroll{overflow-x:auto}
   }
 
-  /* liste des 20 départements, indépendante des espèces */
-  .depts{margin:0;padding:0 0 0 24px}
-  .depts li{margin:0 0 4px}
-  .depts li::marker{font-family:"Courier Prime",monospace;font-size:11px;color:var(--corp)}
   .specs{list-style:none;margin:0;padding:0}
   .specs li{margin:0 0 3px}
   .spec{position:relative;border-bottom:1px dotted var(--corp);cursor:help;outline:0}
@@ -96,7 +91,7 @@
   <p class="fine">Les planches d'identification sont consultables au survol de chaque espèce.</p>
   <div class="table-scroll">
   <table class="affect">
-    <tr><th style="width:48px">Palier</th><th>Postes</th><th>Espèce</th><th>Département d'affectation</th></tr>
+    <tr><th style="width:48px">Palier</th><th>Postes</th><th>Espèce</th></tr>
 
     <tr><td rowspan="6">1</td>
       <td class="txt" rowspan="6"><ul class="specs">
@@ -107,29 +102,7 @@
         <li>Coursier·e interne</li>
         <li>Opérateur·rice de saisie DR-7</li>
       </ul></td>
-      <td class="txt"><span class="spec" tabindex="0">Humain·e<span class="plate"><img src="img/rh21/humain.jpg" alt="Humain·e" loading="lazy"><span class="plate-cap">Pl. 1 — Humain·e</span></span></span></td>
-      <td class="txt" rowspan="25"><ol class="depts">
-        <li>Accueil</li>
-        <li>Services généraux</li>
-        <li>Chœur</li>
-        <li>Archives &amp; Patrimoine</li>
-        <li>Secrétariat</li>
-        <li>Espaces verts</li>
-        <li>Liturgie</li>
-        <li>Gardiennage</li>
-        <li>Logistique</li>
-        <li>Immobilier</li>
-        <li>Méthodes</li>
-        <li>Qualité</li>
-        <li>Ressources humaines</li>
-        <li>Offrandes</li>
-        <li>Conseil scientifique</li>
-        <li>Communication</li>
-        <li>Recherche &amp; Développement</li>
-        <li>Approvisionnements</li>
-        <li>Pépinière de talents</li>
-        <li>Non communiqué</li>
-      </ol></td></tr>
+      <td class="txt"><span class="spec" tabindex="0">Humain·e<span class="plate"><img src="img/rh21/humain.jpg" alt="Humain·e" loading="lazy"><span class="plate-cap">Pl. 1 — Humain·e</span></span></span></td></tr>
     <tr><td class="txt"><span class="spec" tabindex="0">Goule<span class="plate"><img src="img/rh21/goule.jpg" alt="Goule" loading="lazy"><span class="plate-cap">Pl. 2 — Goule</span></span></span></td></tr>
     <tr><td class="txt"><span class="spec" tabindex="0">Profond saisonnier<span class="plate"><img src="img/rh21/profond-saisonnier.jpg" alt="Profond saisonnier" loading="lazy"><span class="plate-cap">Pl. 3 — Profond saisonnier</span></span></span></td></tr>
     <tr><td class="txt"><span class="spec" tabindex="0">Rat à face humaine<span class="plate"><img src="img/rh21/rat.jpg" alt="Rat à face humaine" loading="lazy"><span class="plate-cap">Pl. 4 — Rat à face humaine</span></span></span></td></tr>

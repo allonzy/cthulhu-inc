@@ -244,7 +244,7 @@
 
         <div class="field f-dept">
           <div class="lab">DÉPARTEMENT</div>
-          <div class="val"><input type="text" id="departement" list="l-departements" placeholder="tirage D20, cf. RH-21" autocomplete="off"></div>
+          <div class="val"><input type="text" id="departement" list="l-departements" placeholder="ex. Liturgie" autocomplete="off"></div>
         </div>
 
         <div class="field f-palier">
@@ -284,11 +284,11 @@
         <option value="Celui qu'on ne nomme pas">
       </datalist>
       <datalist id="l-departements">
-        <option value="1. Accueil"><option value="2. Services généraux"><option value="3. Chœur"><option value="4. Archives &amp; Patrimoine">
-        <option value="5. Secrétariat"><option value="6. Espaces verts"><option value="7. Liturgie"><option value="8. Gardiennage">
-        <option value="9. Logistique"><option value="10. Immobilier"><option value="11. Méthodes"><option value="12. Qualité">
-        <option value="13. Ressources humaines"><option value="14. Offrandes"><option value="15. Conseil scientifique"><option value="16. Communication">
-        <option value="17. Recherche &amp; Développement"><option value="18. Approvisionnements"><option value="19. Pépinière de talents"><option value="20. Non communiqué">
+        <option value="Liturgie"><option value="Chœur"><option value="Accueil"><option value="Services généraux">
+        <option value="Archives &amp; Patrimoine"><option value="Secrétariat"><option value="Espaces verts"><option value="Gardiennage">
+        <option value="Logistique"><option value="Immobilier"><option value="Méthodes"><option value="Qualité">
+        <option value="Ressources humaines"><option value="Offrandes"><option value="Conseil scientifique"><option value="Communication">
+        <option value="Recherche &amp; Développement"><option value="Approvisionnements"><option value="Pépinière de talents">
       </datalist>
 
       <div class="field" style="grid-column:1/-1">
@@ -359,7 +359,7 @@
     "Rôdeur dimensionnel":"rodeur.jpg","Ancien":"ancien.jpg","Sombre rejeton":"sombre-rejeton.jpg",
     "Larve amorphe de Tsathoggua":"larve-tsathoggua.jpg","Celui qu'on ne nomme pas":"hastur.jpg"
   };
-  var DEF={nom:'',fonction:'',espece:'',departement:'',portrait:'',inventaire:'',notes:'',palier:1,pvMax:6,pv:6,cb:6,ch:4,mort:false,reins:null,silenceEnd:null};
+  var DEF={nom:'',fonction:'',espece:'',departement:'Liturgie',portrait:'',inventaire:'',notes:'',palier:1,pvMax:6,pv:6,cb:6,ch:4,mort:false,reins:null,silenceEnd:null};
   var S;
 
   function load(){
